@@ -128,3 +128,4 @@ dmypy.json
 # Pyre type checker
 .pyre/
 .DS_Store
+01_CS231n/assignment1/cs231n/datasets/cifar-10-batches-py/
