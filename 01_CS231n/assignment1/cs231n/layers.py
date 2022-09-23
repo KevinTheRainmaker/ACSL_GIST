@@ -2,7 +2,6 @@ from builtins import range
 import numpy as np
 
 
-
 def affine_forward(x, w, b):
     """
     Computes the forward pass for an affine (fully-connected) layer.
@@ -28,7 +27,11 @@ def affine_forward(x, w, b):
     ###########################################################################
     # *****START OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
 
-    pass
+    row_dim = x.shape[0]
+    col_dim = np.prod(x.shape[1:])
+    x_reshape = x.reshape(row_dim, col_dim)
+
+    out = np.dot(x_reshape, w) + b
 
     # *****END OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
     ###########################################################################
@@ -61,7 +64,17 @@ def affine_backward(dout, cache):
     ###########################################################################
     # *****START OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
 
-    pass
+    x = cache[0]
+    w = cache[1]
+    b = cache[2]
+
+    row_dim = x.shape[0]
+    col_dim = np.prod(x.shape[1:])
+    x_reshape = x.reshape(row_dim, col_dim)
+
+    dw = x_reshape.T.dot(dout)
+    dx = dout.dot(w.T).reshape(x.shape)
+    db = np.sum(dout, axis=0)
 
     # *****END OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
     ###########################################################################
@@ -87,7 +100,8 @@ def relu_forward(x):
     ###########################################################################
     # *****START OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
 
-    pass
+    out = np.maximum(0, x)
+    cache = x
 
     # *****END OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
     ###########################################################################
@@ -114,7 +128,10 @@ def relu_backward(dout, cache):
     ###########################################################################
     # *****START OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
 
-    pass
+    x = cache
+    out = np.maximum(0, x)  # ReLU performed again
+    out[out > 0] = 1
+    dx = out * dout
 
     # *****END OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
     ###########################################################################
@@ -773,7 +790,12 @@ def svm_loss(x, y):
     ###########################################################################
     # *****START OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
 
-    pass
+    sample_number = len(y)
+    x_true = x[range(sample_number), y][:, None]
+    margins = np.maximum(0, x - x_true + 1)
+    loss = margins.sum() / sample_number - 1
+    dx = (margins > 0).astype(float) / sample_number
+    dx[range(sample_number), y] -= dx.sum(axis=1)
 
     # *****END OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
     ###########################################################################
@@ -803,7 +825,16 @@ def softmax_loss(x, y):
     ###########################################################################
     # *****START OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
 
-    pass
+    sample_number = len(y)
+
+    p = np.exp(x - x.max())
+    p /= p.sum(axis=1, keepdims=True)
+
+    loss = -np.log(p[range(sample_number), y]).sum()
+    loss /= sample_number
+
+    p[range(sample_number), y] -= 1
+    dx = p / sample_number
 
     # *****END OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
     ###########################################################################
