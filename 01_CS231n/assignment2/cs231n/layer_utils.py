@@ -18,6 +18,7 @@ def affine_relu_forward(x, w, b):
     cache = (fc_cache, relu_cache)
     return out, cache
 
+
 def affine_relu_backward(dout, cache):
     """Backward pass for the affine-relu convenience layer.
     """
@@ -28,9 +29,51 @@ def affine_relu_backward(dout, cache):
 
 # *****START OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
 
-pass
+
+def generic_forward(x, w, b, gamma=None, beta=None, bn_param=None, dropout_param=None, last=False):
+    bn_cache, ln_cache, relu_cache, dropout_cache = None, None, None, None
+
+    out, fc_cache = affine_forward(x, w, b)
+
+    if not last:
+        if bn_param is not None:
+            if 'mode' in bn_param:
+                out, bn_cache = batchnorm_forward(out, gamma, beta, bn_param)
+            else:
+                out, ln_cache = layernorm_forward(out, gamma, beta, bn_param)
+
+        out, relu_cache = relu_forward(out)  # perform relu
+
+        if dropout_param is not None:
+            out, dropout_cache = dropout_forward(out, dropout_param)
+
+    cache = fc_cache, bn_cache, ln_cache, relu_cache, dropout_cache
+
+    return out, cache
+
+
+def generic_backward(dout, cache):
+    dgamma, dbeta = None, None
+
+    fc_cache, bn_cache, ln_cache, relu_cache, dropout_cache = cache
+
+    if dropout_cache is not None:
+        dout = dropout_backward(dout, dropout_cache)
+
+    if relu_cache is not None:
+        dout = relu_backward(dout, relu_cache)
+
+    if bn_cache is not None:
+        dout, dgamma, dbeta = batchnorm_backward_alt(dout, bn_cache)
+    elif ln_cache is not None:
+        dout, dgamma, dbeta = layernorm_backward(dout, ln_cache)
+
+    dx, dw, db = affine_backward(dout, fc_cache)
+
+    return dx, dw, db, dgamma, dbeta
 
 # *****END OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
+
 
 def conv_relu_forward(x, w, b, conv_param):
     """A convenience layer that performs a convolution followed by a ReLU.

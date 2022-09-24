@@ -150,7 +150,7 @@ def batchnorm_forward(x, gamma, beta, bn_param):
     mean and variance of each feature, and these averages are used to normalize
     data at test-time.
 
-    At each timestep we update the running averages for mean and variance using
+    At each timestep we update  the running averages for mean and variance using
     an exponential decay based on the momentum parameter:
 
     running_mean = momentum * running_mean + (1 - momentum) * sample_mean
