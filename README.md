@@ -7,4 +7,4 @@
 <a href='https://cs231n.github.io/assignments2022/assignment1/'>과제 링크</a>
 
 ### Assignment #2: Fully Connected and Convolutional Nets, Batch Normalization, Dropout, Pytorch & Network Visualization
-<a gref='https://cs231n.github.io/assignments2022/assignment2/'>과제 링크</a>
+<a href='https://cs231n.github.io/assignments2022/assignment2/'>과제 링크</a>
