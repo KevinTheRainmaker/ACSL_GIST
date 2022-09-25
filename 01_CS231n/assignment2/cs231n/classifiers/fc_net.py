@@ -54,7 +54,7 @@ class FullyConnectedNet(object):
             This will make the dropout layers deteriminstic so we can gradient check the model.
         """
         self.normalization = normalization
-        self.use_dropout = dropout_keep_ratio != 1
+        self.use_dropout = (dropout_keep_ratio != 1)
         self.reg = reg
         self.num_layers = 1 + len(hidden_dims)
         self.dtype = dtype
@@ -81,6 +81,8 @@ class FullyConnectedNet(object):
             if self.normalization and l < self.num_layers-1:
                 self.params[f'gamma{l+1}'] = np.ones(j)
                 self.params[f'beta{l+1}'] = np.zeros(j)
+
+        # del self.params[f'gamma{l+1}'], self.params[f'beta{l+1}'] # no batchnorm after last FC
 
         # *****END OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
         ############################################################################
