@@ -132,3 +132,5 @@ dmypy.json
 
 01_CS231n/*/collect_submission.ipynb
 01_CS231n/*/collectSubmission.sh
+
+01_CS231n/assignment2/cs231n/im2col*
